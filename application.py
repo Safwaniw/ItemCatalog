@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-# from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Category, Item
 from flask import session as login_session
 import random
 import string
@@ -20,12 +20,12 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Item Catalog"
 
 
-# # Connect to Database and create database session
-# engine = create_engine('sqlite:///restaurantmenu.db')
-# Base.metadata.bind = engine
+# Connect to Database and create database session
+engine = create_engine('sqlite:///itemcatalog.db')
+Base.metadata.bind = engine
 
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 # Create anti-forgery state token
