@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+# from database_setup import Base, Restaurant, MenuItem
 from flask import session as login_session
-
+import random
+import string
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
@@ -15,16 +16,16 @@ import requests
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Restaurant Menu Application"
+    open('client_secret.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "Item Catalog"
 
 
-# Connect to Database and create database session
-engine = create_engine('sqlite:///restaurantmenu.db')
-Base.metadata.bind = engine
+# # Connect to Database and create database session
+# engine = create_engine('sqlite:///restaurantmenu.db')
+# Base.metadata.bind = engine
 
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+# DBSession = sessionmaker(bind=engine)
+# session = DBSession()
 
 
 # Create anti-forgery state token
@@ -120,37 +121,36 @@ def gconnect():
     print "done!"
     return output
 
-    # DISCONNECT - Revoke a current user's token and reset their login_session
-	@app.route('/gdisconnect')
-	def gdisconnect():
-	    access_token = login_session.get('access_token')
-	    if access_token is None:
-	        print 'Access Token is None'
-	        response = make_response(json.dumps('Current user not connected.'), 401)
-	        response.headers['Content-Type'] = 'application/json'
-	        return response
-	    print 'In gdisconnect access token is %s', access_token
-	    print 'User name is: '
-	    print login_session['username']
-	    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-	    h = httplib2.Http()
-	    result = h.request(url, 'GET')[0]
-	    print 'result is '
-	    print result
-	    if result['status'] == '200':
-	        del login_session['access_token']
-	        del login_session['gplus_id']
-	        del login_session['username']
-	        del login_session['email']
-	        del login_session['picture']
-	        response = make_response(json.dumps('Successfully disconnected.'), 200)
-	        response.headers['Content-Type'] = 'application/json'
-	        return response
-	    else:
-	        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-	        response.headers['Content-Type'] = 'application/json'
-	        return response
-
+# DISCONNECT - Revoke a current user's token and reset their login_session
+@app.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        print 'Access Token is None'
+        response = make_response(json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    print 'In gdisconnect access token is %s', access_token
+    print 'User name is: '
+    print login_session['username']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    print 'result is '
+    print result
+    if result['status'] == '200':
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
