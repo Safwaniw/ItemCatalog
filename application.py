@@ -12,11 +12,9 @@ import json
 from flask import make_response
 import requests
 
-
 app = Flask(__name__)
 
-CLIENT_ID = json.loads(
-    open('client_secret.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
 
@@ -151,6 +149,13 @@ def gdisconnect():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+# Show all Categorires
+@app.route('/')
+@app.route('/category/')
+def showCategories():
+    category = session.query(Category).all()
+    return render_template('categories.html', category=category)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
