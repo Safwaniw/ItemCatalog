@@ -170,6 +170,18 @@ def newItem():
     else:
         return render_template('newItem.html')
 
+# Delete item
+@app.route('/item/<int:item_id>/delete/', methods=['GET', 'POST'])
+def deleteItem(item_id):
+    itemToDelete = session.query(Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        flash('%s Successfully Deleted' % itemToDelete.title)
+        session.commit()
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template('deleteItem.html', item=itemToDelete)
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
