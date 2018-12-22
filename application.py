@@ -182,6 +182,18 @@ def deleteItem(item_id):
     else:
         return render_template('deleteItem.html', item=itemToDelete)
 
+@app.route('/items/JSON')
+def itemsJSON():
+    items = session.query(Item).all()
+    return jsonify(items=[i.serialize for i in items])
+
+@app.route('/catalog/JSON')
+def catalogJSON():
+    category = session.query(Category).all()
+    for c in category:
+        items = session.query(Item).filter_by(cat_id=c.id).all()
+        return jsonify(items=[i.serialize for i in items])
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
