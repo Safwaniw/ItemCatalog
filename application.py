@@ -157,6 +157,19 @@ def showCategories():
     category = session.query(Category).all()
     return render_template('categories.html', category=category)
 
+@app.route('/item/new/', methods=['GET', 'POST'])
+def newItem():
+    if request.method == 'POST':
+        newItem = Item(title=request.form['title'],
+                        description=request.form['description'],
+                        cat_id=request.form['category'])
+        session.add(newItem)
+        flash('New Item %s Successfully Created' % newItem.title)
+        session.commit()
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template('newItem.html')
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
