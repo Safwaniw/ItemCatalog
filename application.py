@@ -167,6 +167,20 @@ def newItem():
     else:
         return render_template('newItem.html')
 
+@app.route('/item/<int:item_id>/edit/', methods=['GET', 'POST'])
+def editItem(item_id):
+    editedItem = session.query(
+        Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        if request.form['title']:
+            editedItem.title = request.form['title']
+            editedItem.description = request.form['description']
+            
+            flash('Item Successfully Edited %s' % editedItem.title)
+            return redirect(url_for('showCategories'))
+    else:
+        return render_template('edititem.html', item=editedItem)
+
 # Delete item
 @app.route('/item/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(item_id):
