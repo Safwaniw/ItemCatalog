@@ -152,7 +152,9 @@ def gdisconnect():
 @app.route('/category/')
 def showCategories():
     category = session.query(Category).all()
-    return render_template('categories.html', category=category)
+
+    items=session.query(Item).all()
+    return render_template('categories.html', category=category,items=items)
 
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
