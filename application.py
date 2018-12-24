@@ -161,6 +161,10 @@ def showItems(cat_id):
     items = session.query(Item).filter_by(cat_id=cat_id).all()
     return render_template('items.html',items=items)
 
+@app.route('/itemdetails/<int:item_id>/', methods=['GET'])
+def showItemDetils(item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('itemdetails.html',item=item)
 
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
