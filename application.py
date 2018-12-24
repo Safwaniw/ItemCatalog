@@ -156,6 +156,12 @@ def showCategories():
     items=session.query(Item).all()
     return render_template('categories.html', category=category,items=items)
 
+@app.route('/items/<int:cat_id>/', methods=['GET'])
+def showItems(cat_id):
+    items = session.query(Item).filter_by(cat_id=cat_id).all()
+    return render_template('items.html',items=items)
+
+
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
     if request.method == 'POST':
@@ -179,6 +185,8 @@ def editItem(item_id):
             editedItem.description = request.form['description']
             
             flash('Item Successfully Edited %s' % editedItem.title)
+            session.add(editedItem)
+            session.commit()
             return redirect(url_for('showCategories'))
     else:
         return render_template('edititem.html', item=editedItem)
