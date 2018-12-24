@@ -156,9 +156,17 @@ def showCategories():
     items=session.query(Item).all()
     return render_template('categories.html', category=category,items=items)
 
+@app.route('/byCategory/<int:cat_id>/')
+def showItemByCategory(cat_id):
+    category = session.query(Category).all()
+
+    items = session.query(Item).filter_by(cat_id=cat_id).all()
+    return render_template('categories.html', category=category,items=items)
+
 @app.route('/items/<int:cat_id>/', methods=['GET'])
 def showItems(cat_id):
     items = session.query(Item).filter_by(cat_id=cat_id).all()
+
     return render_template('items.html',items=items)
 
 @app.route('/itemdetails/<int:item_id>/', methods=['GET'])
