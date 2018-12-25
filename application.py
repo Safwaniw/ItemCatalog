@@ -176,16 +176,18 @@ def showItemDetils(item_id):
 
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
+    category = session.query(Category).all()
+    print category
     if request.method == 'POST':
         newItem = Item(title=request.form['title'],
                         description=request.form['description'],
-                        cat_id=request.form['category'])
+                        cat_id=request.form['category1'])
         session.add(newItem)
         flash('New Item %s Successfully Created' % newItem.title)
         session.commit()
         return redirect(url_for('showCategories'))
     else:
-        return render_template('newItem.html')
+        return render_template('newItem.html',category=category)
 
 @app.route('/item/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(item_id):
