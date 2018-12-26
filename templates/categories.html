@@ -2,16 +2,10 @@
 {% block content %}
 {% include "header.html" %}
 <div>
-	<h1>Categories</h1>
+	<h1>Item Catalog</h1>
 </div>
 
-<div class="col-md-10 padding-none">
-	<a href="{{url_for('newItem')}}">
-		<button class="btn btn-default" id="new-item">
-			<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Item
-		</button>
-	</a>
-</div>
+
 
 <div class = 'flash'>
 	{% with messages = get_flashed_messages() %}
@@ -27,22 +21,31 @@
 </div>
 
 <div class="container">
-	
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-8">
+			<a href="{{url_for('newItem')}}">Add Item</a>
+		</div>
+	</div>
 <div class="row">
 	<div class="col-md-4">
 		<p>Categories</p>
-			{% for cat in category %}
-				<h3>{{cat.name}}</h3>
-			{% endfor %}	
+		{% for cat in category %}
+			<a href = "{{url_for('showItemByCategory', cat_id = cat.id)}}">
+			<h3>{{cat.name}}</h3>
+		</a>
+		{% endfor %}	
 	</div>
 
 	<div class="col-md-8">
-		<p>Iems</p>
-			{% for i in items %}
-			<a href = "{{url_for('editItem', item_id = i.id)}}">
-				<h3>{{i.title}}</h3> 
-			</a>
-			{% endfor %}
+
+
+		<p>Items</p>
+		{% for i in items %}
+		<a href = "{{url_for('showItemDetils', item_id = i.id)}}">
+			<h3>{{i.title}}</h3> 
+		</a>
+		{% endfor %}
 	</div>
 	</div>	
 </div>
