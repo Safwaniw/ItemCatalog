@@ -118,7 +118,6 @@ def gconnect():
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
-    print(1)
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
