@@ -115,10 +115,10 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
-
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
+    print(1)
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
@@ -222,12 +222,24 @@ def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[i.serialize for i in items])
 
+
+# All Categories (id,name)
 @app.route('/catalog/JSON')
 def catalogJSON():
     category = session.query(Category).all()
-    for c in category:
-        items = session.query(Item).filter_by(cat_id=c.id).all()
-        return jsonify(items=[i.serialize for i in items])
+    cat_dict = [cat.serialize for cat in category]
+    for i in range (len(cat_dict)):
+        items = [item.serialize for item in session.query(Item).filter_by(cat_id=cat_dict[i]["id"]).all()]
+
+        return jsonify(Category=cat_dict)        
+
+
+# @app.route('/catalog/JSON')
+# def catalogJSON():
+#     category = session.query(Category).all()
+#     for c in category:
+#         items = session.query(Item).filter_by(cat_id=c.id).all()
+#         return jsonify(items=[i.serialize for i in items])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

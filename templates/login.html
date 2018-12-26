@@ -20,7 +20,7 @@
         data-approvalprompt="force">
       </span>
     </div>
-    <div id="result"></div>
+    <div id="result"><p> test tst {{STATE}}</p></div>
 
     <script>
     function signInCallback(authResult) {
@@ -39,7 +39,7 @@
             if (result) {
               $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
              setTimeout(function() {
-              window.location.href = "/restaurant";
+              window.location.href = "/category";
              }, 4000);
               
           } else if (authResult['error']) {
