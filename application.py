@@ -24,8 +24,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
-
 # User related methods
 def createUser(login_session):
     new_user=User(name=login_session['name'],email=login_session['email'],picture=login_session['picture'])
@@ -39,9 +37,6 @@ def getUserID(email):
 def getUserInfo(user_id):
     user = session.query(User).filter_by(email=email).one()
     return user
-
-
-
 
 # Create anti-forgery state token
 @app.route('/login')
@@ -123,6 +118,12 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+
+    #confirm user existance, otherwise create new
+    if not user_id:
+        user_id = createUser(login_session)
+        
+    login_session['user_id']=user_id
 
     output = ''
     output += '<h1>Welcome, '
