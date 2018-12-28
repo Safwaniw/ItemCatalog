@@ -48,8 +48,11 @@ def getUserID(email):
 def getUserInfo(user_id):
     try:
         user = session.query(User).filter_by(id=user_id).one()
+        print (user)
         return user    
     except:
+        user = ""
+        print (user)
         return None
 
    
@@ -234,18 +237,17 @@ def newItem():
 def editItem(item_id):
     editedItem = session.query(Item).filter_by(id=item_id).one()
 
-    owner = getUserInfo(editedItem.user_id)
-    
+    owner = editedItem.user_id    
 
     #check the owner of item
     #Autorize the owner only to perform this action
     #check if the logged in user is theowner of the current Item
     print("owner")
-    print(owner.id)
+    print(owner)
     print("current")
-    curr=(editedItem.user_id)
+    curr=(login_session['user_id'])
     print(curr)
-    if owner.id != editedItem.user_id:
+    if owner != login_session['user_id']:
         flash('You can not perform this action to the current Item, you can edit only Items that belogns to you !')
         return redirect(url_for('showCategories'))
     
