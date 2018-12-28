@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, Item
+from database_setup import Base, Category, Item, User
 from flask import session as login_session
 import random
 import string
@@ -26,17 +26,33 @@ session = DBSession()
 
 # User related methods
 def createUser(login_session):
-    new_user=User(name=login_session['name'],email=login_session['email'],picture=login_session['picture'])
+    new_user=User(name=login_session['username'],email=login_session['email'],picture=login_session['picture'])
     session.add (new_user)
+    print ('user added')
+    print (new_user.name)
+    print (new_user.email)
+
     return getUserID(login_session['email'])
 
 def getUserID(email):
-    user = session.query(User).filter_by(email=email).one()
-    return user.id
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        print(111)
+        print(email)
+        print(user.id)
+        return user.id
+
+    except:
+        return None
 
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(email=email).one()
-    return user
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+        return user    
+    except:
+        return None
+
+   
 
 # Create anti-forgery state token
 @app.route('/login')
@@ -119,10 +135,16 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    #confirm user existance, otherwise create new
+    # #verfy user existance, otherwise create new
+    user_id=getUserID(login_session['email'])
+    print(1)
+    print(user_id)
+    print(2)
+    print(createUser(login_session))
+
     if not user_id:
         user_id = createUser(login_session)
-        
+
     login_session['user_id']=user_id
 
     output = ''
@@ -150,8 +172,7 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
+   
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['gplus_id']
@@ -200,7 +221,8 @@ def newItem():
     if request.method == 'POST':
         newItem = Item(title=request.form['title'],
                         description=request.form['description'],
-                        cat_id=request.form['category1'])
+                        cat_id=request.form['category1'],
+                        user_id=login_session['user_id'])
         session.add(newItem)
         flash('New Item %s Successfully Created' % newItem.title)
         session.commit()
@@ -210,8 +232,22 @@ def newItem():
 
 @app.route('/item/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(item_id):
-    editedItem = session.query(
-        Item).filter_by(id=item_id).one()
+    editedItem = session.query(Item).filter_by(id=item_id).one()
+
+    owner = getUserInfo(editedItem.user_id)
+    
+
+    #check the owner of item
+    #Autorize the owner only to perform this action
+    #check if the logged in user is theowner of the current Item
+    print("owner")
+    print(owner.id)
+    print("current")
+    print(getUserInfo(editedItem.user_id))
+    if owner.id != getUserInfo(editedItem.user_id):
+        flash('You can not perform this action to the current Item, you can edit only Items that belogns to you !')
+        return redirect(url_for('showCategories'))
+    
     if request.method == 'POST':
         if request.form['title']:
             editedItem.title = request.form['title']
