@@ -31,8 +31,10 @@ def createUser(login_session):
     print ('user added')
     print (new_user.name)
     print (new_user.email)
-
-    return getUserID(login_session['email'])
+    session.commit()
+    currUser = session.query(User).filter_by(email=login_session['email']).one()
+    print(currUser.id)
+    return currUser.id
 
 def getUserID(email):
     try:
@@ -143,9 +145,9 @@ def gconnect():
     print(1)
     print(user_id)
     print(2)
-    print(createUser(login_session))
+    # print(createUser(login_session))
 
-    if not user_id:
+    if not user_id or user_id=='None':
         user_id = createUser(login_session)
 
     login_session['user_id']=user_id
@@ -237,18 +239,18 @@ def newItem():
 def editItem(item_id):
     editedItem = session.query(Item).filter_by(id=item_id).one()
 
-    owner = editedItem.user_id    
-
     #check the owner of item
     #Autorize the owner only to perform this action
     #check if the logged in user is theowner of the current Item
+    owner = editedItem.user_id 
+    curr=(login_session['user_id'])
     print("owner")
     print(owner)
     print("current")
-    curr=(login_session['user_id'])
     print(curr)
-    if owner != login_session['user_id']:
-        flash('You can not perform this action to the current Item, you can edit only Items that belogns to you !')
+    
+    if owner != curr:
+        flash('You can not perform this action to the current Item, you can Edit only Items that belogns to you !')
         return redirect(url_for('showCategories'))
     
     if request.method == 'POST':
@@ -267,6 +269,22 @@ def editItem(item_id):
 @app.route('/item/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(item_id):
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
+
+    #check the owner of item
+    #Autorize the owner only to perform this action
+    #check if the logged in user is theowner of the current Item
+    owner = itemToDelete.user_id 
+    curr=(login_session['user_id'])
+    print("owner")
+    print(owner)
+    print("current")
+    print(curr)
+    
+    if owner != curr:
+        flash('You can not perform this action to the current Item, you can Delete only Items that belogns to you !')
+        return redirect(url_for('showCategories'))
+
+
     if request.method == 'POST':
         session.delete(itemToDelete)
         flash('%s Successfully Deleted' % itemToDelete.title)
