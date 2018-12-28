@@ -24,6 +24,25 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+
+# User related methods
+def createUser(login_session):
+    new_user=User(name=login_session['name'],email=login_session['email'],picture=login_session['picture'])
+    session.add (new_user)
+    return getUserID(login_session['email'])
+
+def getUserID(email):
+    user = session.query(User).filter_by(email=email).one()
+    return user.id
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(email=email).one()
+    return user
+
+
+
+
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
