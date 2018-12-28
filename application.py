@@ -243,8 +243,9 @@ def editItem(item_id):
     print("owner")
     print(owner.id)
     print("current")
-    print(getUserInfo(editedItem.user_id))
-    if owner.id != getUserInfo(editedItem.user_id):
+    curr=(editedItem.user_id)
+    print(curr)
+    if owner.id != editedItem.user_id:
         flash('You can not perform this action to the current Item, you can edit only Items that belogns to you !')
         return redirect(url_for('showCategories'))
     
