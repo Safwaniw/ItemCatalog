@@ -49,5 +49,5 @@ class Item(Base):
           'title'          : self.title,
        }
 
-engine = create_engine('sqlite:///itemcatalog.db')
+engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)
