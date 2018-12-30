@@ -210,6 +210,7 @@ def showItemByCategory(cat_id):
     items = session.query(Item).filter_by(cat_id=cat_id).all()
     return render_template('categories.html', category=category,items=items)
 
+#show a specific Item complete information
 @app.route('/itemdetails/<int:item_id>/', methods=['GET'])
 def showItemDetils(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
@@ -220,6 +221,7 @@ def showItemDetils(item_id):
 
     return render_template('itemdetails.html',item=item)
 
+#Add new Item
 @app.route('/item/new/', methods=['GET', 'POST'])
 def newItem():
     category = session.query(Category).all()
@@ -239,6 +241,7 @@ def newItem():
     else:
         return render_template('newItem.html',category=category)
 
+#Edit an Item
 @app.route('/item/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(item_id):
     editedItem = session.query(Item).filter_by(id=item_id).one()
