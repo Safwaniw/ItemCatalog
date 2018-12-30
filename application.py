@@ -30,7 +30,7 @@ session = DBSession()
 # Create new user if not already available in DB
 def createUser(login_session):
     try:
-        new_user=User(name=login_session['username'],email=login_session['email'],picture=login_session['picture'])
+        new_user=User(email=login_session['email'],name=login_session['username'],picture=login_session['picture'])
         session.add (new_user)
         print ('user added')
         print (new_user.name)
@@ -309,14 +309,22 @@ def itemsJSON():
     return jsonify(items=[i.serialize for i in items])
 
 # All Categories
-@app.route('/catalog/JSON')
-def catalogJSON():
+@app.route('/categories/JSON')
+def categoriesJSON():
     category = session.query(Category).all()
     cat_dict = [cat.serialize for cat in category]
     for i in range (len(cat_dict)):
         items = [item.serialize for item in session.query(Item).filter_by(cat_id=cat_dict[i]["id"]).all()]
 
-        return jsonify(Category=cat_dict)  
+    return jsonify(Category=cat_dict)
+
+
+# All Items by Category
+@app.route('/catalog/<int:category_id>/JSON')
+def categoryItemsJSON(category_id):
+    items = [item.serialize for item in session.query(Item).filter_by(cat_id=category_id).all()]
+
+    return jsonify(items=items)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
