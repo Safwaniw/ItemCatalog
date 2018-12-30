@@ -311,13 +311,9 @@ def itemsJSON():
 # All Categories
 @app.route('/categories/JSON')
 def categoriesJSON():
-    category = session.query(Category).all()
-    cat_dict = [cat.serialize for cat in category]
-    for i in range (len(cat_dict)):
-        items = [item.serialize for item in session.query(Item).filter_by(cat_id=cat_dict[i]["id"]).all()]
-
-    return jsonify(Category=cat_dict)
-
+    categories = session.query(Category).all()
+   
+    return jsonify(categories=[c.serialize for c in categories])
 
 # All Items by Category
 @app.route('/catalog/<int:category_id>/JSON')
