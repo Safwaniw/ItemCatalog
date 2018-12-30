@@ -13,17 +13,27 @@
 		<div class="col-md-6 col-md-offset-1 padding-top">
 			<form action="#" method = "post">
 				<div class="form-group">
-				<label for="name">Title:</label>
+				<label>Title:</label>
 				<input type ="text" class="form-control" maxlength="100" name="title">
-				<label for="name">Description:</label>
+				<label>Description:</label>
 				<input type ="text" class="form-control" maxlength="100" name="description">
-				<label for="name">Category:</label>
-				<input type ="text" class="form-control" maxlength="100" name="category">
+				<label>Category:</label>
+
+				<select name="category1" class="form-control" maxlength="100">
+                {% for c in category %}
+                    <option value="{{c.id}}">{{c.name}}</option>
+                {% endfor %}
+                </select>
+
 				<div class="padding-bottom"></div>
 				<button type="submit" class="btn btn-default" id="submit" type="submit">
-				<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Create</button>
+				Create</button>
 				</div>
 			</form>
+			<br />
+			<a href = '{{url_for('showCategories')}}'>
+				Back to main page
+			</a>
 		</div>
 	</div>
 {% endblock %}

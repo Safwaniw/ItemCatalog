@@ -7,16 +7,10 @@
 	<div class="col-md-2 text-right">	
 		{% if 'username' not in session %}
 			<a href="{{url_for('showLogin')}}" class="navbar-text navbar-margin-btn">
-			<!--  <button type="button" class="btn btn-default navbar-btn">
-			Log In
-			</button> -->
 				<p class="text-success">Log In</p>
 			</a>
 		{% else %}
 			<a href="{{url_for('gdisconnect')}}" class="navbar-text navbar-margin-btn">
-			<!--  <button type="button" class="btn btn-default navbar-btn">
-			Logout
-			</button> -->
 				<p class="text-danger">Logout</p>
 			</a>
 		{% endif %}      
