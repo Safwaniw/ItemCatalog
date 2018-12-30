@@ -10,7 +10,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
  
-user1=User(name="Waleed Al-Safwani", email ="waleed@usacity.com")
+user1=User(name="Waleed Al-Safwani", email ="waleed@udacity.com")
 session.add(user1)
 session.commit()
 
