@@ -11,6 +11,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-6 col-md-offset-1 padding-top">
+			<label>Description :</label>
 			<label for="description">{{item.description}}</label>
 			<br /><br />
 			<a href = "{{url_for('editItem', item_id = item.id)}}">Edit</a> | <a href = "{{url_for('deleteItem', item_id = item.id)}}">Delete</a>
