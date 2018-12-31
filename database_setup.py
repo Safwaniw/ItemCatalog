@@ -38,9 +38,9 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(8))
     cat_id = Column(Integer, ForeignKey('category.id'))
-    category = relationship(Category)
+    category = relationship(Category, cascade="all, delete-orphan")
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user = relationship(User, cascade="all, delete-orphan")
 
     @property
     def serialize(self):
