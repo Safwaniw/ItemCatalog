@@ -21,6 +21,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     description = Column(String(250))
+    item = relationship('Item', cascade='all, delete-orphan')
 
     @property
     def serialize(self):
@@ -38,9 +39,9 @@ class Item(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(8))
     cat_id = Column(Integer, ForeignKey('category.id'))
-    category = relationship(Category, cascade="all, delete-orphan")
+    category = relationship(Category)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User, cascade="all, delete-orphan")
+    user = relationship(User)
 
     @property
     def serialize(self):
